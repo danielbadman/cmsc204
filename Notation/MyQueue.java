@@ -1,48 +1,85 @@
 import java.util.ArrayList;
 
-public class MyQueue <T> implements QueueInterface {
+public class MyQueue <T> implements QueueInterface<T> {
 	
-	private T[] queue;
+	private ArrayList<T> queue;
+	private int backIndex;
+	private int capacity;
+	private static final int DEFAULT_CAPACITY = 20;
+	
+	public MyQueue() {
+		this(DEFAULT_CAPACITY);
+	}
+	
+	public MyQueue(int capacity) {
+		queue = new ArrayList<T>();
+		backIndex = -1;
+		this.capacity = capacity;
+	}
 	
 	@Override
 	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return false;
+		if (backIndex == -1) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
 	public boolean isFull() {
-		// TODO Auto-generated method stub
-		return false;
+		if (backIndex == capacity) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
-	public Object dequeue() throws QueueUnderflowException {
-		// TODO Auto-generated method stub
-		return null;
+	public T dequeue() throws QueueUnderflowException {
+		if (!isEmpty()) {
+			T temp = queue.get(0);
+			queue.remove(0);
+			backIndex--;
+			return temp;
+		} else {
+			throw new StackUnderflowException();
+		}
+		
 	}
 
 	@Override
 	public int size() {
-		// TODO Auto-generated method stub
-		return 0;
+		return queue.size();
 	}
-
+	
 	@Override
-	public boolean enqueue(Object e) throws QueueOverflowException {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean enqueue(T e) throws QueueOverflowException {
+		if(isFull()) {
+			throw new QueueOverflowException();
+		} else {
+			queue.add(e);
+			backIndex++;
+			return true;
+		}
 	}
 
 	@Override
 	public String toString(String delimiter) {
-		// TODO Auto-generated method stub
-		return null;
+		String result = "";
+		for (T e : queue) {
+			result = e.toString() + delimiter + result;
+		}
+		return result;
 	}
 
 	@Override
-	public void fill(ArrayList list) throws QueueOverflowException {
-		// TODO Auto-generated method stub
+	public void fill(ArrayList<T> list) throws QueueOverflowException {
+		queue = new ArrayList<T>();
+		backIndex = -1;
+		for (int i = 0; i < list.size(); i++) {
+			enqueue(list.get(i));
+		}
 		
 	}
 
