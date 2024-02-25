@@ -4,15 +4,22 @@ public class MyStack <T> implements StackInterface<T> {
 
 	private ArrayList<T> stack;
 	private int topIndex;
+	private int capacity;
+	private static final int DEFAULT_CAPACITY = 20;
 	
 	public MyStack() {
+		this(DEFAULT_CAPACITY);
+	}
+
+	public MyStack(int capacity) {
 		stack = new ArrayList<T>();
 		topIndex = -1;
+		this.capacity= capacity; 
 	}
 	
 	@Override
 	public boolean isEmpty() {
-		if (stack.get(0) == null) {
+		if (topIndex == -1) {
 			return true;
 		} else {
 			return false;
@@ -21,8 +28,11 @@ public class MyStack <T> implements StackInterface<T> {
 
 	@Override
 	public boolean isFull() {
-		// TODO Auto-generated method stub
-		return false;
+		if (topIndex == capacity) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
@@ -52,10 +62,14 @@ public class MyStack <T> implements StackInterface<T> {
 		return stack.size();
 	}
 
-	@SuppressWarnings("unchecked")
 	public boolean push(T e) throws StackOverflowException {
-		stack.add(e);
-		return true;
+		if (isFull()) {
+			throw new StackOverflowException();
+		} else {
+			stack.add(e);
+			topIndex++;
+			return true;
+		}
 	}
 
 	@Override
@@ -68,9 +82,12 @@ public class MyStack <T> implements StackInterface<T> {
 	}
 
 	@Override
-	public void fill(ArrayList list) throws StackOverflowException {
-	
-		
+	public void fill(ArrayList<T> list) throws StackOverflowException {
+		stack = new ArrayList<T>();
+		topIndex = -1;
+		for (int i = 0; i < list.size(); i++) {
+			push(list.get(i));
+		}
 	}
 	
 }
