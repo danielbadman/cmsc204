@@ -28,7 +28,7 @@ public class MyQueue <T> implements QueueInterface<T> {
 
 	@Override
 	public boolean isFull() {
-		if (backIndex == capacity) {
+		if (backIndex == capacity - 1) {
 			return true;
 		} else {
 			return false;
@@ -43,7 +43,7 @@ public class MyQueue <T> implements QueueInterface<T> {
 			backIndex--;
 			return temp;
 		} else {
-			throw new StackUnderflowException();
+			throw new QueueUnderflowException();
 		}
 		
 	}
@@ -64,15 +64,18 @@ public class MyQueue <T> implements QueueInterface<T> {
 		}
 	}
 
+	public String toString() {
+		return toString("");
+	}
+	
 	@Override
 	public String toString(String delimiter) {
 		String result = "";
 		for (T e : queue) {
-			result = e.toString() + delimiter + result;
+			result += e.toString() + delimiter;
 		}
 		return result;
 	}
-
 	@Override
 	public void fill(ArrayList<T> list) throws QueueOverflowException {
 		queue = new ArrayList<T>();
