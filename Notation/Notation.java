@@ -12,15 +12,15 @@ public class Notation {
 			} else if (c == '('){
 				stack.push(Character.toString(c));
 			} else if (c == '+' || c == '-') {
-				stack.push(Character.toString(c));
-				while ((stack.top() == "+" || stack.top() == "-" || stack.top() == "/" || stack.top() == "*") && !stack.isEmpty()) {
+				while (!stack.isEmpty() && (stack.top().equals("+") || stack.top().equals("-") || stack.top().equals("/") || stack.top().equals("*"))) {
 					queue.enqueue(stack.pop());
 				}
+				stack.push(Character.toString(c));
 			} else if (c == '*' || c == '/') {
-				stack.push(Character.toString(c));
-				while ((stack.top() == "/" || stack.top() == "*") && !stack.isEmpty()) {
+				while (!stack.isEmpty() && (stack.top().equals("/") || stack.top().equals("*"))) {
 					queue.enqueue(stack.pop());
 				}
+				stack.push(Character.toString(c));
 			} else if (c == ')') {
 				while (!stack.top().equals("(")) {
 					queue.enqueue(stack.pop());
@@ -50,13 +50,31 @@ public class Notation {
 			if (Character.isDigit(c)) {
 				stack.push(c.toString());
 			} else if (isOperator(c)) {
-				String tempRight = stack.pop();
-				String tempLeft = stack.pop();
+				String tempRight = "";
+				String tempLeft = "";
+				try {
+					tempRight = stack.pop();
+					tempLeft = stack.pop();
+				} catch (StackUnderflowException e) {
+					throw new InvalidNotationFormatException();
+				}
 				String operation = "" + '(' + tempLeft + c + tempRight + ')';
 				stack.push(operation);
 			}
 		}
-		return stack.pop();
+
+		String answer;
+		try {
+			answer = stack.pop();
+		} catch (StackUnderflowException e) {
+			throw new InvalidNotationFormatException();
+		}
+		
+		if (!stack.isEmpty()) {
+			throw new InvalidNotationFormatException();
+		} else {
+			return answer;
+		}
 	}
 	
 	public static double evaluatePostfixExpression(String postfixExpr) throws InvalidNotationFormatException {
@@ -67,8 +85,14 @@ public class Notation {
 			if (Character.isDigit(c)) {
 				stack.push(Double.parseDouble("" + c));
 			} else if (isOperator(c)) {
-				double tempRight = stack.pop();
-				double tempLeft = stack.pop();
+				double tempRight = 0;
+				double tempLeft = 0;
+				try {
+					tempRight = stack.pop();
+					tempLeft = stack.pop();
+				} catch (StackUnderflowException e) {
+					throw new InvalidNotationFormatException();
+				}
 				double result = 0;
 				switch (c) {
 				case '+' -> result = tempLeft + tempRight;
@@ -80,7 +104,18 @@ public class Notation {
 			}
 		}
 		
-		return stack.pop();
+		Double answer;
+		try {
+			answer = stack.pop();
+		} catch (StackUnderflowException e) {
+			throw new InvalidNotationFormatException();
+		}
+		
+		if (!stack.isEmpty()) {
+			throw new InvalidNotationFormatException();
+		} else {
+			return answer;
+		}
 	}
 	
 	private static boolean isOperator(char c) {
