@@ -28,7 +28,7 @@ public class MyStack <T> implements StackInterface<T> {
 
 	@Override
 	public boolean isFull() {
-		if (topIndex == capacity) {
+		if (topIndex == capacity - 1) {
 			return true;
 		} else {
 			return false;
@@ -72,11 +72,15 @@ public class MyStack <T> implements StackInterface<T> {
 		}
 	}
 
+	public String toString() {
+		return toString("");
+	}
+	
 	@Override
 	public String toString(String delimiter) {
 		String result = "";
 		for (T e : stack) {
-			result = e.toString() + delimiter + result;
+			result += e.toString() + delimiter;
 		}
 		return result;
 	}
